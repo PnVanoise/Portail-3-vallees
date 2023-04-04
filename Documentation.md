@@ -4,7 +4,7 @@
  - Capteurs PNV: structure des données, modalités de transmission, critères de validité
 	 - Ornitela
 	 - Biotrack
-	 - Tecnosmart
+	 - Technosmart
 	 - Iops
 	 - Xerius
  - Interrogation PNx + recherche web pour autres types de capteurs à prendre en compte
@@ -28,7 +28,7 @@
 
 ## III Développement
  
-## IV Test
+## IV Tests
 
 ## II Déploiement
 - Site Convention 3 vallées (grand public, accès libre)
