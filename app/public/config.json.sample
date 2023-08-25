@@ -1,4 +1,48 @@
 { 
-    "api_url": "http://5.196.111.112:5000/api"
+    "api_url": "http://IP:PORT/api",
+
+        "leaflet_fonds_carte": {
+        "IGNCARTE": {
+			"name": "Carte IGN",
+			"url": "https://wxs.ign.fr/4lpxv93m9i5p68oiceh6knu2/geoportail/wmts?LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&EXCEPTIONS=text/xml&FORMAT=image/jpeg&SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}",
+			"attribution": "IGN",
+			"maxZoom": 17,
+			"subdomains": ""
+        },
+		"IGNPHOTO": {
+			"name": "Photo aérienne IGN",
+			"url": "http://gpp3-wxs.ign.fr/maCleIgn/geoportail/wmts?LAYER=ORTHOIMAGERY.ORTHOPHOTOS&EXCEPTIONS=text/xml&FORMAT=image/jpeg&SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}",
+			"attribution": "IGN",
+			"maxZoom": 17,
+			"subdomains": ""
+        },
+		"IGNCARTEDET": {
+			"name": "Carte détaillée IGN",
+			"url": "http://gpp3-wxs.ign.fr/maCleIgn/geoportail/wmts?LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&EXCEPTIONS=text/xml&FORMAT=image/jpeg&SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}",
+			"attribution": "IGN",
+			"maxZoom": 17,
+			"subdomains": ""
+        },
+		"OSM": {
+			"name": "OpenStreetMap",
+			"url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+			"attribution": "&copy; <a href='http://www.openstreetmap.org/copyright'>OpenStreetMap</a>",
+			"maxZoom": 17,
+			"subdomains": ""
+        }
+        
+    },
+
+
+    "leaflet_fonds_carte_defaut": "OSM",
+
+
+    "leaflet_centrage_initiale": [45.3874, 6.7949],
+
+
+    "leaflet_zoom_initial": 10,
+
+
+    "leaflet_zoom_max": 17
 }
 

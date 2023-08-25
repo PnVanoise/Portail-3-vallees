@@ -24,8 +24,8 @@ fetch("./config.json")
   })
 
 // Create an example popover
-document.querySelectorAll('[data-bs-toggle="popover"]')
-  .forEach(popover => {
-    new Popover(popover)
-  })
+// document.querySelectorAll('[data-bs-toggle="popover"]')
+//   .forEach(popover => {
+//     new Popover(popover)
+//   })
 
