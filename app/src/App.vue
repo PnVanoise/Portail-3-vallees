@@ -1,13 +1,11 @@
 <script setup>
-
   import Leafletmap from './components/Leafletmap.vue';
-  import Sidebar from './components/Sidebar.vue';
   import Apropos from './components/Apropos.vue';
   import Partenaires from './components/Partenaires.vue';
   import Aide from './components/Aide.vue';
   import Intromodal from './components/Intromodal.vue';
  
-  import { ref, reactive, onMounted } from 'vue';
+  import { ref } from 'vue';
 
   // MODAL
 
@@ -34,21 +32,6 @@
     page.value = 'Partenaires';
   };
 
-  // PROPS
-
-  let individusRef = ref([]);
-
-  const getIndividus = (individus) => {
-      individusRef.value = individus;
-      console.log("app:", individusRef.value);
-  };
-
-  let timeRef = ref(null);
-
-  const getTime = (timeSelect) => {
-    console.log(timeSelect);
-    timeRef.value = timeSelect.name;
-  };
   
 </script>
 
@@ -79,41 +62,21 @@
   </nav>
 
 
-  <div class="d-flex flex-row">
-    <div class="leaflet-container">
-      <div class="col-xs-12 col-sm-12 col-md-7 col-lg-8">
-        <Leafletmap v-if="page=='Accueil'" :individus="individusRef" :time="timeRef"/>
+  <div id="content" >
+      
+      <Leafletmap v-if="page=='Accueil'" />
 
-        <Sidebar v-if="page=='Accueil'" @send-individu="getIndividus" @sendTime="getTime"/>
+      <Apropos v-if="page=='Apropos'"/>
+      
+      <Partenaires v-if="page=='Partenaires'"/>
 
+      <Aide v-if="page=='Aide'"/>
 
-
-        <Apropos v-if="page=='Apropos'"/>
-        
-        <Partenaires v-if="page=='Partenaires'"/>
-
-        <Aide v-if="page=='Aide'"/>
-
-        
-
-      </div>
-    </div>
   </div>
 
 </template>
 
 <style scoped>
-
-/* .container {
-  height: 100%;
-  width: 100%;
-  display: flex;
-  margin: 0;
-  padding: 0;
-  flex-direction: column;
-} */
-
-
 
 .flex-grow-1 {
   overflow: hidden;
@@ -127,11 +90,13 @@
   color: #F16764;
 }
 
-.leaflet-container {
-  min-height: 88vh;
-  flex: 1; 
+#content {
   position: relative;
-  z-index: 0;
+  /* width: 100%; */
+  /* height: 100%; */
+  /* min-height: 88vh; */
+  /* flex: 1;  */
+  background-color: #FFFFFF;
 }
 
 </style>

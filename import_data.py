@@ -58,6 +58,11 @@ for lsource in cfg.data_sources:
 			logger.info("Skipping file:" + lfile + "(not a CSV file)")
 			continue
 
+		if os.path.getsize(os.path.join(ldir, lfile))==0:
+			print("Skipping file:", lfile, "(Empty file)")
+			logger.info("Skipping file:" + lfile + "(Empty file)")
+			continue
+
 		column_mapping = cfg.data_sources[lsource]["csv_columns"]
 		print("Processing file "+lfile)
 		logger.info("Processing file "+lfile)

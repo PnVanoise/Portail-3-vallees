@@ -4,59 +4,81 @@ import { ref, onMounted, computed } from 'vue';
 // Définition des variables
 let especes = ref(null);
 let individus = ref(null);
-
 let selectEspece = ref([]);
 let isDataLoaded = ref(false);
 let showIndividus = ref(false);
-
 let selectIndividu = ref([]);
-// let showLoc = ref(false);
-
+let selectIndividuByEspece = ref({});
 
 const emit = defineEmits(["sendIndividu", "sendTime"]);
+
 
 // Mise à jour du tableau selectIndividu quand on sélectionne/déselectionne un individu
 const onIndividuSelected = (individu) => {
     individu.checked = !individu.checked;
+    const espKey = individu.id_espece;
     if (!individu.checked) {
         selectIndividu.value = selectIndividu.value.filter((item) => item.name !== individu.name);
         // console.log(selectIndividu);
+
+        if (selectIndividuByEspece.value[espKey]) {
+            selectIndividuByEspece.value[espKey] = selectIndividuByEspece.value[espKey].filter((item) => item.name !== individu.name);
+        }
         emit('sendIndividu', selectIndividu.value);
         return 
     };
+
     selectIndividu.value.push(individu);
+
+    if (!selectIndividuByEspece.value[espKey]) {
+        selectIndividuByEspece.value[espKey] = [];
+    }
+    selectIndividuByEspece.value[espKey].push(individu);
+
     emit('sendIndividu', selectIndividu.value);
-
-    // console.log(selectIndividu);
-
-    // if (selectIndividu.value.includes(individu)) {
-    //     selectIndividu.value = selectIndividu.value.filter((item) => item !== individu);
-    // } else {
-    //     selectIndividu.value.push(individu);
-        
-    //     //showLoc.value = true;
-    // }
-    // console.log("onselected:", individu)
-    // emit('sendIndividu', individu);
-    // console.log(individu) // l'individu est bien retourné lorsque l'on coche et décoche
-    
 };
 
-const isIndividuSelected = (individu) => {
-    console.log("isselected:", individu);
-    return selectIndividu.value.includes(individu);
+// const isIndividuSelected = (individu) => {
+//     console.log("isselected:", individu);
+//     return selectIndividu.value.includes(individu);
 
-};
+// };
 
+let showAigleWarning = ref(false);
 
 // Mise à jour du tableau selectEspece quand on sélectionne/désélectionne une espèce 
 const onEspeceSelected = (espece) => {
     if (selectEspece.value.includes(espece)) {
         selectEspece.value = selectEspece.value.filter((item) => item !== espece);
         showIndividus.value = selectEspece.value.length > 0;
+
+        const espKey = espece.id_espece;
+        if (selectIndividuByEspece.value[espKey]) {
+            selectIndividuByEspece.value[espKey].forEach((individu) => {
+                individu.checked = false;
+                selectIndividu.value = selectIndividu.value.filter((item) => item.name !== individu.name);
+            });
+            delete selectIndividuByEspece.value[espKey];
+        }
+
+        emit('sendIndividu', selectIndividu.value);
+        console.log("Sidebar unchecked espece, individu :", selectIndividu.value);
+
     } else {
+        if (espece.nom_vern === "Aigle royal") {
+            alert("Attention, les données aigles ne sont disponibles qu'au-delà des 30 derniers jours.")
+        }
+        const espKey = espece.id_espece;
+        if (selectIndividuByEspece.value[espKey]) {
+            selectIndividuByEspece.value[espKey].forEach((individu) => {
+                individu.checked = false;
+                selectIndividu.value = selectIndividu.value.filter((item) => item.name !== individu.name);
+            });
+        };
+
         selectEspece.value.push(espece);
         showIndividus.value = true;
+        showAigleWarning.value = false;
     }
 };
 
@@ -102,6 +124,7 @@ const filteredIndividus = computed(() => {
 
 });
 
+
 // Liste des derniers jours 
 const selectedLastDay = ref(15);
 const options = ref([
@@ -120,12 +143,23 @@ const options = ref([
     { value: 330 },
     { value: 360 }]);
 
+const isOffcanvasVisible = ref(true);
+
+const toggleOffcanvas = () => {
+  isOffcanvasVisible.value = !isOffcanvasVisible.value;
+};
+
+const closeOffcanvas = () => {
+  isOffcanvasVisible.value = false;
+};
+
 </script>
 
 <template>
 
+
     <button class="btn btn-sm btn-light opacity-75 custom-btn" type="button" data-bs-toggle="offcanvas"
-        data-bs-target="#offcanvasLeft" aria-controls="offcanvasLeft">
+        data-bs-target="#offcanvasLeft" aria-controls="offcanvasLeft" @click="toggleOffcanvas">
         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-arrow-bar-right"
             viewBox="0 0 16 16">
             <path fill-rule="evenodd"
@@ -134,11 +168,11 @@ const options = ref([
     </button>
 
     <div class="row h-100">
-        <div class="offcanvas offcanvas-start custom-offcanvas show" data-bs-backdrop="false" tabindex="-1" id="offcanvasLeft"
-            aria-labelledby="offcanvasLeftLabel">
+        <div class="offcanvas offcanvas-start custom-offcanvas" data-bs-backdrop="false" tabindex="-1" id="offcanvasLeft"
+            aria-labelledby="offcanvasLeftLabel" :class="{ show: isOffcanvasVisible }">
             <div class="offcanvas-header">
                 <h5 class="offcanvas-title" id="offcanvasLeftLabel">Suivi des déplacements</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" @click="closeOffcanvas"></button>
             </div>
             <div class="offcanvas-body">
                 <nav>
@@ -189,31 +223,29 @@ const options = ref([
                         <strong>Cliquez sur le nom d'un oiseau pour voir son parcours</strong>
                         <br>
                         Pour les
-                        <select v-model="selectedLastDay">
-                            <option v-for="option in options" @input="$emit('sendTime', option)">{{ option.value }}</option>
+                        <select v-model="selectedLastDay" @change="$emit('sendTime', selectedLastDay)">
+                            <option v-for="option in options" :value="option.value">{{ option.value }}</option>
                         </select>
                         derniers jours.
                         <div class="list-group list-group-flush" v-show="showIndividus">
                             <!-- Pour chaque individu on génère des items en fonction de ou des espèce(s) sélectionnée(s)-->
                             <label v-for="individu in filteredIndividus" class="list-group-item">
-                                <div class="d-flex flex-row">
-                                    <!-- <input :id="individu" :name="individu" v-model="selectIndividu" class="form-check-input me-3" type="checkbox" :value=individu @change="clearOrfetchIndividu($event)" > -->
-                                    <!-- <label :for="individu"> {{ individu }} </label> -->
-                                    <!-- <input class="form-check-input me-3" type="checkbox"
-                                        :checked="isIndividuSelected(individu)"
-                                        @change="onIndividuSelected(individu)"> -->
-                                    <input class="form-check-input me-3" type="checkbox" @change="onIndividuSelected(individu)">
-                                    <svg width="40" height="40" viewBox="0 0 72 61" fill="none"
+                                <div class="d-flex justify-content-between flex-row">
+                                    <input class="form-check-input me-3" type="checkbox" :checked="individu.checked" @change="onIndividuSelected(individu)">
+                                    <div class="d-flex align-items-center">
+                                        <svg width="40" height="40" viewBox="0 0 72 61" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
-                                        <path
+                                            <path
                                             d="M72 30.5111L61.5429 26.4549C60.6514 22.327 58.4229 19.9579 58.4229 19.9579C57.0888 18.5584 55.5043 17.4482 53.7599 16.6907C52.0156 15.9331 50.1456 15.5432 48.2571 15.5432C46.3687 15.5432 44.4987 15.9331 42.7544 16.6907C41.01 17.4482 39.4255 18.5584 38.0914 19.9579L33.0171 25.2704L10.2857 0C6.85714 14.3582 10.2857 28.7163 18.6857 40.2747L0 59.2275C0 59.2275 30.48 66.4065 48.24 51.8689C57.7029 44.1155 59.8286 39.5927 61.1657 34.8186L72 30.5111ZM53.8629 31.3008C52.5257 32.7007 50.3314 32.7007 48.9943 31.3008C48.6764 30.9687 48.4243 30.5743 48.2522 30.14C48.0802 29.7058 47.9916 29.2403 47.9916 28.7702C47.9916 28.3001 48.0802 27.8346 48.2522 27.4003C48.4243 26.9661 48.6764 26.5716 48.9943 26.2396C50.3314 24.8396 52.5257 24.8396 53.8629 26.2396C55.2 27.6395 55.2 29.9009 53.8629 31.3008Z"
                                             :fill="individu.attributs.fill" />
-                                    </svg>
+                                        </svg>
+                                    </div>
                                     <!-- <img src="https://static.thenounproject.com/png/80049-200.png" width="40" height="40"> -->
                                     <div class="d-flex align-items-center ms-3">
                                         <div>
-                                            {{ individu.name }} <br>
-                                            <i>Sexe : {{ individu.attributs.sex_libelle }} </i>
+                                            <h6> {{ individu.name }} </h6>
+                                            <i>Espèce : {{ individu.nom_vern }} <br>
+                                            Sexe : {{ individu.attributs.sex_libelle }} </i>
                                         </div>
                                     </div>
                                 </div>
@@ -234,7 +266,7 @@ const options = ref([
 .custom-btn {
     position: absolute;
     top: 0;
-    z-index: 1;
+    z-index: 2;
 }
 
 #img_espece {
@@ -251,10 +283,12 @@ const options = ref([
 } */
 
 .custom-offcanvas {
-    width: 310px;
+    /* position: absolute; */
+    width: 370px;
+    /* height: 100%;
+    bottom: 0; */
+    z-index: 2;
     top: 86px;
-    bottom: 0;
-
 }
 
 .custom-offcanvas .nav-link {
