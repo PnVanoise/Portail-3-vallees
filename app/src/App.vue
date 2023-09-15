@@ -37,7 +37,7 @@
 
 <template>
  
-  <!-- <Intromodal v-show="isModalVisible" @close="closeModal"/> -->
+  <Intromodal v-show="isModalVisible" @close="closeModal"/>
  
   <nav class="navbar fixed-top">
     <div class="container-fluid">

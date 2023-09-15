@@ -79,6 +79,12 @@ const onEspeceSelected = (espece) => {
         selectEspece.value.push(espece);
         showIndividus.value = true;
         showAigleWarning.value = false;
+
+        // Ouverture du volet Individu 
+        const individuTab = document.getElementById("nav-individu-tab");
+        if (individuTab) {
+            individuTab.click();
+        }
     }
 };
 
@@ -141,7 +147,8 @@ const options = ref([
     { value: 270 },
     { value: 300 },
     { value: 330 },
-    { value: 360 }]);
+    { value: 360 },
+    { value: "All"}]);
 
 const isOffcanvasVisible = ref(true);
 
@@ -175,6 +182,9 @@ const closeOffcanvas = () => {
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" @click="closeOffcanvas"></button>
             </div>
             <div class="offcanvas-body">
+                <p class="text-intro">Le <strong>Tétras-lyre</strong>, le <strong>Lagopède alpin</strong>, la <strong>Bartavelle</strong> et l'<strong>Aigle royal</strong> dans les Alpes sont exposés à différentes sources de dérangement 
+                    liées au développement des loisirs de plein air. Différents travaux montrent que ce dérangement en période hivernale est susceptible, en altérant le comportement des oiseaux, d’impacter leur survie.
+                    <br><br><strong>GPS 3 Vallées</strong> a pour objectif de vous informer et de vous sensibiliser à propos de ces enjeux en vous proposant de visualiser les déplacements en temps réel mais aussi passés de ces espèces. </p>
                 <nav>
                     <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                         <button class="nav-link active" id="nav-espece-tab" data-bs-toggle="tab"
@@ -195,17 +205,19 @@ const closeOffcanvas = () => {
                         <div class="list-group list-group-flush">
                             <!-- Pour chaque espèce on génère des items-->
                             <label v-for="espece in especes" class="list-group-item">
-                                <div class="d-flex justify-content-between flex-row">
-                                    <input class="form-check-input me-1" type="checkbox" :checked="isEspeceSelected(espece)"
-                                        @change="onEspeceSelected(espece)">
-                                    <img id="img_espece" :src="espece.lien_img" width="50" height="50">
-                                    <div class="d-flex align-items-center ms-1">
-                                        <div>
-                                            {{ espece.nom_vern }} <br>
-                                            <i>{{ espece.lb_nom }}</i>
+                                <div class="d-flex justify-content-between"> 
+                                    <div class="d-flex justify-content-start flex-row">
+                                        <input class="form-check-input me-3" type="checkbox" :checked="isEspeceSelected(espece)"
+                                            @change="onEspeceSelected(espece)">
+                                        <img id="img_espece" :src="espece.lien_img" width="50" height="50">
+                                        <div class="d-flex align-items-center ms-2">
+                                            <div>
+                                                {{ espece.nom_vern }} <br>
+                                                <i>{{ espece.lb_nom }}</i>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="d-flex align-items-center ms-1">
+                                    <div class="d-flex align-items-center ms-2">
                                         <a class="btn btn-link" type="button" :href="espece.lien_fiche" target="_blank">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16">
                                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
@@ -214,6 +226,7 @@ const closeOffcanvas = () => {
                                         </a>
                                     </div>
                                 </div>
+                                
                             </label>
                         </div>
 
@@ -230,22 +243,27 @@ const closeOffcanvas = () => {
                         <div class="list-group list-group-flush" v-show="showIndividus">
                             <!-- Pour chaque individu on génère des items en fonction de ou des espèce(s) sélectionnée(s)-->
                             <label v-for="individu in filteredIndividus" class="list-group-item">
-                                <div class="d-flex justify-content-between flex-row">
-                                    <input class="form-check-input me-3" type="checkbox" :checked="individu.checked" @change="onIndividuSelected(individu)">
-                                    <div class="d-flex align-items-center">
-                                        <svg width="40" height="40" viewBox="0 0 72 61" fill="none"
-                                        xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                            d="M72 30.5111L61.5429 26.4549C60.6514 22.327 58.4229 19.9579 58.4229 19.9579C57.0888 18.5584 55.5043 17.4482 53.7599 16.6907C52.0156 15.9331 50.1456 15.5432 48.2571 15.5432C46.3687 15.5432 44.4987 15.9331 42.7544 16.6907C41.01 17.4482 39.4255 18.5584 38.0914 19.9579L33.0171 25.2704L10.2857 0C6.85714 14.3582 10.2857 28.7163 18.6857 40.2747L0 59.2275C0 59.2275 30.48 66.4065 48.24 51.8689C57.7029 44.1155 59.8286 39.5927 61.1657 34.8186L72 30.5111ZM53.8629 31.3008C52.5257 32.7007 50.3314 32.7007 48.9943 31.3008C48.6764 30.9687 48.4243 30.5743 48.2522 30.14C48.0802 29.7058 47.9916 29.2403 47.9916 28.7702C47.9916 28.3001 48.0802 27.8346 48.2522 27.4003C48.4243 26.9661 48.6764 26.5716 48.9943 26.2396C50.3314 24.8396 52.5257 24.8396 53.8629 26.2396C55.2 27.6395 55.2 29.9009 53.8629 31.3008Z"
-                                            :fill="individu.attributs.fill" />
-                                        </svg>
-                                    </div>
-                                    <!-- <img src="https://static.thenounproject.com/png/80049-200.png" width="40" height="40"> -->
-                                    <div class="d-flex align-items-center ms-3">
-                                        <div>
-                                            <h6> {{ individu.name }} </h6>
-                                            <i>Espèce : {{ individu.nom_vern }} <br>
-                                            Sexe : {{ individu.attributs.sex_libelle }} </i>
+                                <div class="d-flex justify-content-between">
+                                    <div class="d-flex justify-content-start flex-row">
+                                        <input class="form-check-input me-3" type="checkbox" :checked="individu.checked" @change="onIndividuSelected(individu)">
+                                        <div class="d-flex align-items-center">
+                                            <svg width="40" height="40" viewBox="0 0 72 61" fill="none"
+                                            xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                d="M72 30.5111L61.5429 26.4549C60.6514 22.327 58.4229 19.9579 58.4229 19.9579C57.0888 18.5584 55.5043 17.4482 53.7599 16.6907C52.0156 15.9331 50.1456 15.5432 48.2571 15.5432C46.3687 15.5432 44.4987 15.9331 42.7544 16.6907C41.01 17.4482 39.4255 18.5584 38.0914 19.9579L33.0171 25.2704L10.2857 0C6.85714 14.3582 10.2857 28.7163 18.6857 40.2747L0 59.2275C0 59.2275 30.48 66.4065 48.24 51.8689C57.7029 44.1155 59.8286 39.5927 61.1657 34.8186L72 30.5111ZM53.8629 31.3008C52.5257 32.7007 50.3314 32.7007 48.9943 31.3008C48.6764 30.9687 48.4243 30.5743 48.2522 30.14C48.0802 29.7058 47.9916 29.2403 47.9916 28.7702C47.9916 28.3001 48.0802 27.8346 48.2522 27.4003C48.4243 26.9661 48.6764 26.5716 48.9943 26.2396C50.3314 24.8396 52.5257 24.8396 53.8629 26.2396C55.2 27.6395 55.2 29.9009 53.8629 31.3008Z"
+                                                :fill="individu.attributs.fill" />
+                                            </svg>
+                                        </div>
+                                        <!-- <img src="https://static.thenounproject.com/png/80049-200.png" width="40" height="40"> -->
+                                        <div class="d-flex align-items-center ms-3">
+                                            <div>
+                                                <h6> {{ individu.name }} </h6>
+                                                <i class="info_ind">Espèce : {{ individu.nom_vern }} <br>
+                                                Sexe : {{ individu.attributs.sex_libelle }} <br>
+                                                Début de suivi : {{ individu.date_debut_suivi }} <br>
+                                                Fin de suivi : <span v-if="individu.date_fin_suivi">{{ individu.date_fin_suivi }}</span>
+                                                <span v-else>En cours</span></i>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -263,6 +281,12 @@ const closeOffcanvas = () => {
 </template>
 
 <style scoped>
+
+.text-intro {
+    text-align: left;
+    font-size: small;
+}
+
 .custom-btn {
     position: absolute;
     top: 0;
@@ -272,15 +296,6 @@ const closeOffcanvas = () => {
 #img_espece {
     border-radius: 50%;
 }
-
-
-/* .rotateimg90 {
-  -webkit-transform:rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  transform: rotate(90deg);
-} */
 
 .custom-offcanvas {
     /* position: absolute; */
@@ -302,4 +317,9 @@ const closeOffcanvas = () => {
 .custom-offcanvas .nav-link:active {
     color: inherit;
 }
+
+.info_ind {
+    font-size: 14px;
+}
+
 </style>

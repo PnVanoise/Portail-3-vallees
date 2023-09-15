@@ -23,7 +23,7 @@ import { ref, onMounted } from 'vue';
 
       <div class="row">
 
-        <h4 style="color: rgb(0, 20, 137);">Un engagement dans la durée pour mieux connaître et protéger les oiseaux sur
+        <h4 style="color: #F16764;">Un engagement dans la durée pour mieux connaître et protéger les oiseaux sur
           le domaine skiable des 3 Vallées</h4>
 
         <p>Ces acteurs de la montagne se sont engagés jusqu’en 2024 à <strong>poursuivre l’amélioration de la connaissance
@@ -48,7 +48,7 @@ import { ref, onMounted } from 'vue';
         <p>Les enseignements de ces trois premières années de suivi sont <strong>riches mais encore incomplets</strong>
           pour pouvoir proposer des <strong>actions de protection et de gestion réellement adaptées</strong>.</p>
 
-        <h4 style="color: rgb(0, 20, 137);">Un partenariat financier important pour mettre en œuvre des solutions
+        <h4 style="color: #F16764;">Un partenariat financier important pour mettre en œuvre des solutions
           efficaces</h4>
 
         <p>Les partenaires impliqués dans cette première étude, rejoints par les trois communes

@@ -15,7 +15,7 @@
             <div class="row">
                 <div id="img" class="col">
                         <img src="../../public/pics/meribel.png" class="mx-5" width="130">
-                        <img src="../../public/pics/courchevel.png" class="mx-5" width="150" > <br>
+                        <img src="../../public/pics/courchevel.png" class="mx-5 my-4" width="150" > <br>
                         <img src="../../public/pics/lesbelleville.png" class="my-4" width="130">
 
                 </div>
@@ -38,15 +38,15 @@
                 </div>
                 <div id="img" class="col align-self-center">
                     <img src="../../public/pics/valthorens.png" class="mx-5" width="200">
-                    <img src="../../public/pics/sevabel.png" class="mx-5" width="150"> <br>
-                    <img src="../../public/pics/3vallees.png" class="mx-5" width="170">
+                    <img src="../../public/pics/sevabel.png" class="mx-5 my-3" width="150"> <br>
+                    <img src="../../public/pics/3vallees.png" class="mx-5 my-3" width="170">
                     <img src="../../public/pics/meribelalpina.jpg" class="mx-5" width="150">
                 </div>
             </div>
             <div class="row">
                 <div id="img" class="col align-self-center">
-                    <img src="../../public/pics/pnv.png" class="mx-5" width="170">
-                    <img src="../../public/pics/ofb.png" class="mx-5" width="200">
+                    <img src="../../public/pics/pnv.png" class="mx-5 my-4" width="170">
+                    <img src="../../public/pics/ofb.png" class="mx-5 my-4" width="200">
                     <img src="../../public/pics/onf.png" class="mx-5 my-4" width="200"> <br>
                     <img src="../../public/pics/fcs.png" class="mx-5 my-4" width="150">
                     <img src="../../public/pics/aetos.png" class="mx-5 my-4" width="150">

@@ -30,11 +30,11 @@ const emit = defineEmits(['close']);
                 </div>
                 <div class="modal-body">
                     <p>
-                        Bienvenue sur le portail cartographique
+                        Bienvenue sur le portail cartographique :
                         <br><img src="/GPS3V_black.png" width="200" height="200">
-                        <br>Cliquez dès à présent sur une espèce pour ouvrir et visualiser les déplacements de ses individus équipés
-                        <br> Pour plus d'informations, consultez les onglets A PROPOS et PARTENAIRES
-                        <br>En cas de doute, rendez-vous sur l'onglet AIDE
+                        <br>Cliquez dès à présent sur une <strong>espèce</strong> pour ouvrir et visualiser les <strong>déplacements</strong> de ses <strong>individus équipés.</strong>
+                        <br> Pour plus d'informations, consultez les onglets <strong>A PROPOS</strong> et <strong>PARTENAIRES.</strong>
+                        <br>En cas de doute, rendez-vous sur l'onglet <strong>AIDE.</strong>
                     </p>
                     
                 </div>

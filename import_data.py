@@ -21,9 +21,15 @@ logger = logging.getLogger(__name__)
 logger.setLevel(log_level)
 
 # LOG FILES ROTATION
+# Custom filename for rotated log files
+log_file_rotated = "/home/portail/Portail-3-vallees/import_data_{}.log".format(backup_count)
+
 handler = RotatingFileHandler(log_file, mode='a', maxBytes=max_file_size, backupCount=backup_count, encoding=None, delay=False)
 handler.setLevel(log_level)
 handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+
+# Set the custom filename for rotated log files
+handler.rotator = lambda source, dest: log_file_rotated
 logger.addHandler(handler)
 
 logger.info("Start import data")
@@ -83,7 +89,7 @@ for lsource in cfg.data_sources:
 		csv_device = str(data['id_device'].unique()[0])
 		
 		# CHECK IF THE DEVICE EXISTS AND IS PRESENT ON A REGISTERED ANIMAL
-		query = "select followdem.cor_animal_devices.id_device from followdem.cor_animal_devices left join followdem.t_devices on followdem.cor_animal_devices.id_device = followdem.t_devices.id_device where followdem.cor_animal_devices.date_end is not null and ref_device= '"+csv_device+"'"
+		query = "select followdem.cor_animal_devices.id_device from followdem.cor_animal_devices left join followdem.t_devices on followdem.cor_animal_devices.id_device = followdem.t_devices.id_device where followdem.cor_animal_devices.date_end is null and ref_device= '"+csv_device+"'"
 		cursor.execute(query)
 		row = cursor.fetchone()
 		
@@ -187,5 +193,9 @@ for lsource in cfg.data_sources:
 				print("Error moving the file to 'unprocessed' directory:", e)
 				logger.info("Error moving the file to 'unprocessed' directory:", e)
 
-		
+# REFRESH MATERIALIZED VIEWS
+query = "REFRESH MATERIALIZED VIEW followdem.vm_animals_loc WITH DATA;"
+cursor.execute(query)
+print("Materialized view refreshed!")
+logger.info("Materialized view refreshed!")	
 logger.info("Completed import data")
