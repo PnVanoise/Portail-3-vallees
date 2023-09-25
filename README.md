@@ -1,7 +1,7 @@
 # Portail GPS 3 Vallées
 Portail de suivi de la faune équipée de balises GPS dans le cadre de la Convention 3 Vallées
 
-## Technologies :
+## Technologies
 
 Machine virtuelle :
 - Système d’exploitation Linux : Debian v10
@@ -39,13 +39,12 @@ sudo apt-get install postgresql-15
 sudo apt-get install postgis postgres-15-postgis-3
 sudo apt-get install python3
 sudo apt-get install python3-venv
-sudo apt install apache2
-sudo apt install nodejs
-sudo apt install npm
+sudo apt-get install apache2
+sudo apt-get install nodejs
+sudo apt-get install npm
 sudo apt-get install git
 
 sudo pip install gunicorn
-
 ```
 ### Installation de FollowDem-Admin 
 
@@ -62,7 +61,7 @@ Suivez la doc d’installation (ignorez la partie "Import des données") : https
 Déploiement Gunicorn :
 - Copiez et éditez le fichier de settings : `cp ./settings.ini.sample ./settings.ini`
 - Copiez le fichiez de service : `cp ./GPS3V-admin.service.template /etc/systemd/system/GPS3V-admin.service`
-- Rendre exécutable de fichier sh : `chmod +x /home/user/GPS3vallees-admin/gunicorn_start.sh`
+- Rendre exécutable le fichier sh : `chmod +x /home/user/GPS3vallees-admin/gunicorn_start.sh`
 - Démarrez le service : 
 ```
 sudo systemctl start GPS3V-admin
