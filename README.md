@@ -72,8 +72,7 @@ sudo systemctl enable GPS3V-admin
 - Pour arrêter le service si besoin : `sudo systemctl stop GPS3V-admin`
 - Pour relancer le service si besoin : `sudo systemctl restart GPS3V-admin`
 
-Le serveur est ouvert sur l’IP et le port que vous avez configuré : 
-Exemple : http://localhost:5000/ 
+Le serveur est ouvert sur l’IP et le port que vous avez configuré, exemple : http://localhost:5000/ 
 
 ### Installation de GPS 3 Vallées
 
