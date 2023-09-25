@@ -63,7 +63,7 @@ Déploiement Gunicorn :
 - Copiez et éditez le fichier de settings : `cp ./settings.ini.sample ./settings.ini`
 - Copiez le fichiez de service : `cp ./GPS3V-admin.service.template /etc/systemd/system/GPS3V-admin.service`
 - Rendre exécutable de fichier sh : `chmod +x /home/user/GPS3vallees-admin/gunicorn_start.sh`
-Démarrez le service : 
+- Démarrez le service : 
 ```
 sudo systemctl start GPS3V-admin
 sudo systemctl enable GPS3V-admin
@@ -71,6 +71,7 @@ sudo systemctl enable GPS3V-admin
 - Pour vérifier l’état du service : `sudo systemctl status GPS3V-admin`
 - Pour arrêter le service si besoin : `sudo systemctl stop GPS3V-admin`
 - Pour relancer le service si besoin : `sudo systemctl restart GPS3V-admin`
+
 Le serveur est ouvert sur l’IP et le port que vous avez configuré : 
 Exemple : http://localhost:5000/ 
 
@@ -86,9 +87,9 @@ cd Portail-3-vallees/app
 npm update --save
 ```
 Personnalisation de l'application :
-- Copiez et éditez le fichier de config situé dans /public: `cp ./config.json.sample ./config.json`
+- Copiez et éditez le fichier de config situé dans /public : `cp ./config.json.sample ./config.json`
 - Développement de l’application : `npm run dev`
-- Compil de l’application pour la production (création d’un répertoire dist): `npm run build` 
+- Compil de l’application pour la production (création d’un répertoire dist) : `npm run build` 
 
 Déploiement Apache :
 - Copiez la configuration située dans /app : `cp ./conf_apache.template  /etc/apache2/sites-available/GPS3vallees.conf`  
