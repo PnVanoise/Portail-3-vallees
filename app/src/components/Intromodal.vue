@@ -1,5 +1,8 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+
+// Config Items 
+const modalLogo = computed(() => window.config.modal_logo);
 
 let myModal = ref(null);
 
@@ -9,11 +12,12 @@ onMounted(() => {
     modal.addEventListener('shown.bs.modal', () => {
         const myInput = document.getElementById('myInput');
         myInput.focus();
-        console.log('Modal loaded');
+        // console.log('Modal loaded');
     });
 
 });
 
+// Evenement envoyé à App 
 const emit = defineEmits(['close']);
 
 </script>
@@ -22,7 +26,6 @@ const emit = defineEmits(['close']);
     <!-- Modal -->
     <div class="modal" id="myModal" ref="myModal">
         <div class="modal-dialog">
-            <!-- Modal content-->
             <div class="modal-content">
                 <div class="modal-header">
                     <h3 class="modal-title">Besoin d'aide ?</h3>
@@ -31,16 +34,13 @@ const emit = defineEmits(['close']);
                 <div class="modal-body">
                     <p>
                         Bienvenue sur le portail cartographique :
-                        <br><img src="/GPS3V_black.png" width="200" height="200">
+                        <br><img :src="modalLogo" width="200" height="200">
                         <br>Cliquez dès à présent sur une <strong>espèce</strong> pour ouvrir et visualiser les <strong>déplacements</strong> de ses <strong>individus équipés.</strong>
                         <br> Pour plus d'informations, consultez les onglets <strong>A PROPOS</strong> et <strong>PARTENAIRES.</strong>
-                        <br>En cas de doute, rendez-vous sur l'onglet <strong>AIDE.</strong>
+                        <!-- <br>En cas de doute, rendez-vous sur l'onglet <strong>AIDE.</strong> -->
                     </p>
                     
                 </div>
-                <!-- <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                </div> -->
             </div>
 
         </div>
@@ -56,15 +56,10 @@ const emit = defineEmits(['close']);
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+    background-color: rgba(0, 0, 0, 0.5); 
     display: flex; 
     justify-content: center;
     align-items: center; 
-
-/* 
-    display: flex;
-    top: 20%;
-    z-index: 1; */
 } 
 
 .modal-content {

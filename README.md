@@ -31,4 +31,82 @@ Application :
 
 ## Installation 
 
+Prérequis :
+```
+sudo apt-get update
+sudo apt-get upgrade
+sudo apt-get install postgresql-15
+sudo apt-get install postgis postgres-15-postgis-3
+sudo apt-get install python3
+sudo apt-get install python3-venv
+sudo apt install apache2
+sudo apt install nodejs
+sudo apt install npm
+sudo apt-get install git
+
+sudo pip install gunicorn
+
+```
+### Installation de FollowDem-Admin 
+
+Clonez le dépôt :
+```
+git clone git@github.com:PnVanoise/FollowDem-admin.git
+```
+Le projet ayant été élaboré sur une branche, il est possible qu'elle ne soit pas encore appliquée au main, si c'est le cas :
+```
+git clone -b FDadmin-tests-stage git@github.com:PnVanoise/FollowDem-admin.git
+```
+Suivez la doc d’installation (ignorez la partie "Import des données") : https://github.com/PnEcrins/FollowDem-admin/blob/master/docs/installation.rst
+
+Déploiement Gunicorn :
+- Copiez et éditez le fichier de settings : `cp ./settings.ini.sample ./settings.ini`
+- Copiez le fichiez de service : `cp ./GPS3V-admin.service.template /etc/systemd/system/GPS3V-admin.service`
+- Rendre exécutable de fichier sh : `chmod +x /home/user/GPS3vallees-admin/gunicorn_start.sh`
+Démarrez le service : 
+```
+sudo systemctl start GPS3V-admin
+sudo systemctl enable GPS3V-admin
+```
+- Pour vérifier l’état du service : `sudo systemctl status GPS3V-admin`
+- Pour arrêter le service si besoin : `sudo systemctl stop GPS3V-admin`
+- Pour relancer le service si besoin : `sudo systemctl restart GPS3V-admin`
+Le serveur est ouvert sur l’IP et le port que vous avez configuré : 
+Exemple : http://localhost:5000/ 
+
+### Installation de GPS 3 Vallées
+
+Clonez le dépôt :
+```
+git clone git@github.com:PnVanoise/Portail-3-vallees.git
+```
+Mettez à jour les packages (pour les librairies Leaflet, Bootstrap notamment) :
+```
+cd Portail-3-vallees/app 
+npm update --save
+```
+Personnalisation de l'application :
+- Copiez et éditez le fichier de config situé dans /public: `cp ./config.json.sample ./config.json`
+- Développement de l’application : `npm run dev`
+- Compil de l’application pour la production (création d’un répertoire dist): `npm run build` 
+
+Déploiement Apache :
+- Copiez la configuration située dans /app : `cp ./conf_apache.template  /etc/apache2/sites-available/GPS3vallees.conf`  
+- Editez : `sudo nano /etc/apache2/sites-available/GPS3vallees.conf`
+- Activez le service : `sudo a2ensite GPS3vallees.conf`
+- Redémarrez Apache2 : `sudo systemctl restart apache2`
+
+## Copyright
+Auteur·ices :
+
+Parc National de la Vanoise
+
+- Alix Cornu-Lachamp
+- Claire Lagaye
+- Christophe Chillet 
+
+Licence :
+
+- OpenSource
+- (c) GPS 3 Vallées 2023 Parc National de la Vanoise
 

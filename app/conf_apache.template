@@ -1,0 +1,15 @@
+<VirtualHost *:80>
+   ServerName mondomaine.fr
+   Alias / "/home/user/Portail-3-vallees/app/dist/"
+   <Directory "/home/user/Portail-3-vallees/app/dist/">
+       Options Indexes FollowSymLinks
+       AllowOverride All
+       Require all granted
+   </Directory>
+   <Location /home/user/GPS3vallees-admin/api>
+        ProxyPass http://0.0.0.0:5000
+        ProxyPassReverse http://0.0.0.0:5000
+   </Location>
+   ErrorLog ${APACHE_LOG_DIR}/error.log
+   CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>

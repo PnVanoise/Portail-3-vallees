@@ -1,7 +1,13 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 
-// Définition des variables
+// Config Items 
+const textSidebar = computed(() => window.config.text_sidebar);
+const titleSidebar = computed(() => window.config.title_sidebar);
+const copyrightLogo = computed(() => window.config.img_partenaires.pnv);
+const pnUrl = computed(() => window.config.pnx_url);
+
+// Variables
 let especes = ref(null);
 let individus = ref(null);
 let selectEspece = ref([]);
@@ -10,6 +16,7 @@ let showIndividus = ref(false);
 let selectIndividu = ref([]);
 let selectIndividuByEspece = ref({});
 
+// Evenements envoyés à Leafletmap
 const emit = defineEmits(["sendIndividu", "sendTime"]);
 
 
@@ -18,11 +25,13 @@ const onIndividuSelected = (individu) => {
     individu.checked = !individu.checked;
     const espKey = individu.id_espece;
     if (!individu.checked) {
-        selectIndividu.value = selectIndividu.value.filter((item) => item.name !== individu.name);
+        selectIndividu.value = selectIndividu.value.filter((item) => item.id_animal !== individu.id_animal);
+
         // console.log(selectIndividu);
 
         if (selectIndividuByEspece.value[espKey]) {
-            selectIndividuByEspece.value[espKey] = selectIndividuByEspece.value[espKey].filter((item) => item.name !== individu.name);
+            selectIndividuByEspece.value[espKey] = selectIndividuByEspece.value[espKey].filter((item) => item.id_animal !== individu.id_animal);
+
         }
         emit('sendIndividu', selectIndividu.value);
         return 
@@ -38,11 +47,6 @@ const onIndividuSelected = (individu) => {
     emit('sendIndividu', selectIndividu.value);
 };
 
-// const isIndividuSelected = (individu) => {
-//     console.log("isselected:", individu);
-//     return selectIndividu.value.includes(individu);
-
-// };
 
 let showAigleWarning = ref(false);
 
@@ -56,23 +60,25 @@ const onEspeceSelected = (espece) => {
         if (selectIndividuByEspece.value[espKey]) {
             selectIndividuByEspece.value[espKey].forEach((individu) => {
                 individu.checked = false;
-                selectIndividu.value = selectIndividu.value.filter((item) => item.name !== individu.name);
+                selectIndividu.value = selectIndividu.value.filter((item) => item.id_animal !== individu.id_animal);
             });
             delete selectIndividuByEspece.value[espKey];
         }
-
-        emit('sendIndividu', selectIndividu.value);
-        console.log("Sidebar unchecked espece, individu :", selectIndividu.value);
+        // Evenement envoyé à Leafletmap : si l'espèce est décochée, 
+        // ses individus précédement sélectionnés seront retirés de la carte
+        emit('sendIndividu', selectIndividu.value); 
+        // console.log("Sidebar unchecked espece, individu :", selectIndividu.value);
 
     } else {
         if (espece.nom_vern === "Aigle royal") {
-            alert("Attention, les données aigles ne sont disponibles qu'au-delà des 30 derniers jours.")
+            alert("Attention, pour des raisons de préservation, les données aigles ne sont disponibles qu'au-delà des 30 derniers jours. Les 60 derniers jours correspondent aux données d'il y a deux mois")
         }
         const espKey = espece.id_espece;
         if (selectIndividuByEspece.value[espKey]) {
             selectIndividuByEspece.value[espKey].forEach((individu) => {
                 individu.checked = false;
-                selectIndividu.value = selectIndividu.value.filter((item) => item.name !== individu.name);
+                selectIndividu.value = selectIndividu.value.filter((item) => item.id_animal !== individu.id_animal);
+
             });
         };
 
@@ -93,6 +99,15 @@ const isEspeceSelected = (espece) => {
     return selectEspece.value.includes(espece);
 };
 
+// Filtre les individus en fonction de l'espèce sélectionnée ou désélectionnée.
+const filteredIndividus = computed(() => {
+    if (isDataLoaded.value && selectEspece.value.length > 0) {
+        return individus.value.filter((individu) => selectEspece.value.some((e) => e.id_espece === individu.id_espece));
+    } else {
+        return individus.value;
+    }
+});
+
 // Données correspondantes aux espèces
 onMounted(async () => {
     const response = await fetch(window.config.api_url + '/especes');
@@ -110,9 +125,10 @@ onMounted(async () => {
 
     individus.value = data;
 
+    // création d'une variable "checked" par défaut faux
     individus.value.map((individu, index) => {
         individu.checked = false
-    }); // création d'une variable "checked" par défaut faux
+    }); 
 
     //console.log(individus.value);
     isDataLoaded.value = true;
@@ -120,40 +136,18 @@ onMounted(async () => {
 });
 
 
-// Filtre les individus en fonction de l'espèce sélectionnée ou désélectionnée.
-const filteredIndividus = computed(() => {
-    if (isDataLoaded.value && selectEspece.value.length > 0) {
-        return individus.value.filter((individu) => selectEspece.value.some((e) => e.id_espece === individu.id_espece));
-    } else {
-        return individus.value;
-    }
-
-});
-
-
 // Liste des derniers jours 
-const selectedLastDay = ref(15);
-const options = ref([
-    { value: 3 },
-    { value: 15 },
-    { value: 30 },
-    { value: 60 },
-    { value: 90 },
-    { value: 120 },
-    { value: 150 },
-    { value: 180 },
-    { value: 210 },
-    { value: 240 },
-    { value: 270 },
-    { value: 300 },
-    { value: 330 },
-    { value: 360 },
-    { value: "All"}]);
+const selectedLastDay = ref(window.config.default_last_day);
+const options = ref(window.config.last_day);
 
+
+// Ouverture/fermeture de la sidebar
 const isOffcanvasVisible = ref(true);
 
 const toggleOffcanvas = () => {
   isOffcanvasVisible.value = !isOffcanvasVisible.value;
+  document.body.style.overflow = ''; 
+  document.body.style.paddingRight = '';
 };
 
 const closeOffcanvas = () => {
@@ -178,13 +172,11 @@ const closeOffcanvas = () => {
         <div class="offcanvas offcanvas-start custom-offcanvas" data-bs-backdrop="false" tabindex="-1" id="offcanvasLeft"
             aria-labelledby="offcanvasLeftLabel" :class="{ show: isOffcanvasVisible }">
             <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasLeftLabel">Suivi des déplacements</h5>
+                <h5 class="offcanvas-title" id="offcanvasLeftLabel">{{ titleSidebar }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" @click="closeOffcanvas"></button>
             </div>
             <div class="offcanvas-body">
-                <p class="text-intro">Le <strong>Tétras-lyre</strong>, le <strong>Lagopède alpin</strong>, la <strong>Bartavelle</strong> et l'<strong>Aigle royal</strong> dans les Alpes sont exposés à différentes sources de dérangement 
-                    liées au développement des loisirs de plein air. Différents travaux montrent que ce dérangement en période hivernale est susceptible, en altérant le comportement des oiseaux, d’impacter leur survie.
-                    <br><br><strong>GPS 3 Vallées</strong> a pour objectif de vous informer et de vous sensibiliser à propos de ces enjeux en vous proposant de visualiser les déplacements en temps réel mais aussi passés de ces espèces. </p>
+                <p class="text-intro" v-html="textSidebar"></p>
                 <nav>
                     <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                         <button class="nav-link active" id="nav-espece-tab" data-bs-toggle="tab"
@@ -210,14 +202,14 @@ const closeOffcanvas = () => {
                                         <input class="form-check-input me-3" type="checkbox" :checked="isEspeceSelected(espece)"
                                             @change="onEspeceSelected(espece)">
                                         <img id="img_espece" :src="espece.lien_img" width="50" height="50">
-                                        <div class="d-flex align-items-center ms-2">
+                                        <div class="d-flex align-items-center ms-3">
                                             <div>
                                                 {{ espece.nom_vern }} <br>
                                                 <i>{{ espece.lb_nom }}</i>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="d-flex align-items-center ms-2">
+                                    <div class="d-flex align-items-center ms-3">
                                         <a class="btn btn-link" type="button" :href="espece.lien_fiche" target="_blank">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16">
                                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
@@ -245,7 +237,7 @@ const closeOffcanvas = () => {
                             <label v-for="individu in filteredIndividus" class="list-group-item">
                                 <div class="d-flex justify-content-between">
                                     <div class="d-flex justify-content-start flex-row">
-                                        <input class="form-check-input me-3" type="checkbox" :checked="individu.checked" @change="onIndividuSelected(individu)">
+                                        <input class="form-check-input me-4" type="checkbox" :checked="individu.checked" @change="onIndividuSelected(individu)">
                                         <div class="d-flex align-items-center">
                                             <svg width="40" height="40" viewBox="0 0 72 61" fill="none"
                                             xmlns="http://www.w3.org/2000/svg">
@@ -254,8 +246,7 @@ const closeOffcanvas = () => {
                                                 :fill="individu.attributs.fill" />
                                             </svg>
                                         </div>
-                                        <!-- <img src="https://static.thenounproject.com/png/80049-200.png" width="40" height="40"> -->
-                                        <div class="d-flex align-items-center ms-3">
+                                        <div class="d-flex align-items-center ms-4">
                                             <div>
                                                 <h6> {{ individu.name }} </h6>
                                                 <i class="info_ind">Espèce : {{ individu.nom_vern }} <br>
@@ -272,15 +263,32 @@ const closeOffcanvas = () => {
                     </div>
                 </div>
 
+            
+            <div class="fixed-bottom mt-3" style="text-align: center;">
+                <small>
+                    <small>
+                        &copy; Copyright GPS 3 Vallées, 2023
+                        <a :href="pnUrl" target="_blank">
+                        <img :src="copyrightLogo" width="50" >
+                        </a><br>
+                        OpenSource
+                        <a href="https://github.com/PnVanoise/Portail-3-vallees" target="_blank">
+                        <img src="/public/images/github.png" width="20">
+                        </a><br>
+                        <small>Auteur·ices : Alix Cornu-Lachamp, Claire Lagaye, Christophe Chillet</small>
+                    </small> 
+                </small>
             </div>
-            <div class="offcanvas-footer">
-                <!-- <img src="https://storage.needpix.com/rsynced_images/tracks-296631_1280.png" class="rotateimg90" height="100"> -->
-            </div>
+        </div>
         </div>
     </div>
 </template>
 
 <style scoped>
+
+.offcanvas-title {
+    text-align: center;
+}
 
 .text-intro {
     text-align: left;
@@ -298,12 +306,9 @@ const closeOffcanvas = () => {
 }
 
 .custom-offcanvas {
-    /* position: absolute; */
-    width: 370px;
-    /* height: 100%;
-    bottom: 0; */
-    z-index: 2;
-    top: 86px;
+    width: 400px;
+    z-index: 3;
+    top: 86px;    
 }
 
 .custom-offcanvas .nav-link {

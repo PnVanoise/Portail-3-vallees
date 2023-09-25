@@ -1,11 +1,16 @@
 <script setup>
+import { computed } from 'vue';
+
+// Config Items 
+const partenaireLogo = computed(() => window.config.img_partenaires);
+
 
 </script>
 
 <template>
         
-    <div class="d-flex">
-        <div class="col m-5">
+    <div class="d-flex justify-content-center">
+        <div class="col-10 m-5">
 
             <div class="row">
                 <div class="col mb-5">
@@ -14,9 +19,9 @@
             </div>
             <div class="row">
                 <div id="img" class="col">
-                        <img src="../../public/pics/meribel.png" class="mx-5" width="130">
-                        <img src="../../public/pics/courchevel.png" class="mx-5 my-4" width="150" > <br>
-                        <img src="../../public/pics/lesbelleville.png" class="my-4" width="130">
+                        <img :src="partenaireLogo.meribel" class="mx-5" width="130">
+                        <img :src="partenaireLogo.courchevel" class="mx-5 my-4" width="150" > <br>
+                        <img :src="partenaireLogo.belleville" class="my-4" width="130">
 
                 </div>
                 <div class="col">
@@ -37,25 +42,25 @@
                     </p>
                 </div>
                 <div id="img" class="col align-self-center">
-                    <img src="../../public/pics/valthorens.png" class="mx-5" width="200">
-                    <img src="../../public/pics/sevabel.png" class="mx-5 my-3" width="150"> <br>
-                    <img src="../../public/pics/3vallees.png" class="mx-5 my-3" width="170">
-                    <img src="../../public/pics/meribelalpina.jpg" class="mx-5" width="150">
+                    <img :src="partenaireLogo.valthorens" class="mx-5" width="200">
+                    <img :src="partenaireLogo.sevabel" class="mx-5 my-3" width="150"> <br>
+                    <img :src="partenaireLogo.troisvallees" class="mx-5 my-3" width="170">
+                    <img :src="partenaireLogo.alpina" class="mx-5" width="150">
                 </div>
             </div>
             <div class="row">
                 <div id="img" class="col align-self-center">
-                    <img src="../../public/pics/pnv.png" class="mx-5 my-4" width="170">
-                    <img src="../../public/pics/ofb.png" class="mx-5 my-4" width="200">
-                    <img src="../../public/pics/onf.png" class="mx-5 my-4" width="200"> <br>
-                    <img src="../../public/pics/fcs.png" class="mx-5 my-4" width="150">
-                    <img src="../../public/pics/aetos.png" class="mx-5 my-4" width="150">
+                    <img :src="partenaireLogo.pnv" class="mx-5 my-4" width="170">
+                    <img :src="partenaireLogo.ofb" class="mx-5 my-4" width="200">
+                    <img :src="partenaireLogo.onf" class="mx-5 my-4" width="200"> <br>
+                    <img :src="partenaireLogo.fcs" class="mx-5 my-4" width="150">
+                    <img :src="partenaireLogo.aetos" class="mx-5 my-4" width="150">
                 </div>
                 <div class="col">
                     <p>
                         Le <strong>Parc National de la Vanoise</strong> situé dans le département de la Savoie entre les vallées de la Tarentaise et de la Maurienne. Créé en 1963 pour lutter contre la disparition des bouquetins, il est le premier Parc National Français.
                         <br><strong>OFB</strong>, l'Office Français de la Biodiversité créé en 2020, est un établissement public qui contribue à la surveillance, la préservation, la gestion et la restauration de la biodiveristé ainsi qu'à la gestion équilibrée et durable de l'eau en coordination avec la politique nationale de lutte contre le réchauffement climatique.
-                        <br><strong>ONF</strong>, l'Office National des Forêts crée en 1966, est un établissement public chargé de la gestion des forêts publiques.
+                        <br><strong>ONF</strong>, l'Office National des Forêts créé en 1966, est un établissement public chargé de la gestion des forêts publiques.
                         <br>La <strong>Fédération Départementale des Chasseurs de Savoie</strong> est chargée de la prévention du braconnage, d'assurer la promotion et la défense de la chasse et de ses intérêts et de la gestion des espèces chassables.
                         <br><strong>AETOS</strong>, l'Association pour l'Etude des Territoires des Oiseaux de Savoie réalise des études de suivis d'espèces particulières d'oiseaux, dans le but d'améliorer les connaissances et de préconiser des mesures d'atténuation d'impacts pour la préservation de la nature et de notre environnement.
                     </p>
@@ -64,33 +69,10 @@
         </div>
 
     </div>
-        
-    <!-- <div class="container text-center">
-        <div class="row g-2">
-                <div class="col-6">
-                    <div class="p-3">Custom column padding</div>
-                </div>
-                <div class="col-6">
-                    <div class="p-3">Custom column padding</div>
-                </div>
-                <div class="col-6">
-                    <div class="p-3">Custom column padding</div>
-                </div>
-                <div class="col-6">
-                    <div class="p-3">Custom column padding</div>
-                </div>
-        </div>
-    </div> -->
-    
-
 
 </template>
 
 <style scoped>
-
-/* #content_apropos {
-    align-self: center;
-} */
 
 #img {
     text-align: center;

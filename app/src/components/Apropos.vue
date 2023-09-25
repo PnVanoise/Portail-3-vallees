@@ -1,11 +1,14 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { computed } from 'vue';
+
+// Config Items 
+const aproposLogo = computed(() => window.config.img_apropos);
 
 </script>
 
 <template>
-  <div class="d-flex">
-    <div class="col m-5">
+  <div class="d-flex justify-content-center">
+    <div id="context-text" class="col-10 m-5">
       <div class="row mb-5">
         <h1>La Convention Trois Vallées</h1>
       </div>
@@ -18,15 +21,15 @@ import { ref, onMounted } from 'vue';
           Parc national de la Vanoise.</h5>
       </div>
       <div class="row my-3">
-        <img src="../../public/pics/signature_convention_oiseaux_meribel_c_sylvain_aymoz_2.png" class="rounded mx-auto d-block" style="height: 350px;width: auto;">
+        <img :src="aproposLogo.convention_signataires" class="rounded mx-auto d-block" style="height: 350px;width: auto;">
       </div>
 
       <div class="row">
 
-        <h4 style="color: #F16764;">Un engagement dans la durée pour mieux connaître et protéger les oiseaux sur
+        <h4><br>Un engagement dans la durée pour mieux connaître et protéger les oiseaux sur
           le domaine skiable des 3 Vallées</h4>
 
-        <p>Ces acteurs de la montagne se sont engagés jusqu’en 2024 à <strong>poursuivre l’amélioration de la connaissance
+        <p><br>Ces acteurs de la montagne se sont engagés jusqu’en 2024 à <strong>poursuivre l’amélioration de la connaissance
             et la protection de quatre espèces d’oiseaux remarquables - tétras-lyre, lagopède alpin, perdrix bartavelle et
             aigle royal </strong>- fréquentant les domaines skiables en hiver.</p>
 
@@ -48,13 +51,11 @@ import { ref, onMounted } from 'vue';
         <p>Les enseignements de ces trois premières années de suivi sont <strong>riches mais encore incomplets</strong>
           pour pouvoir proposer des <strong>actions de protection et de gestion réellement adaptées</strong>.</p>
 
-        <h4 style="color: #F16764;">Un partenariat financier important pour mettre en œuvre des solutions
-          efficaces</h4>
-
-        <p>Les partenaires impliqués dans cette première étude, rejoints par les trois communes
-          concernées, ont décidé de s’engager pour 3 ans pour&nbsp;:</p>
+        <h4><br>Un partenariat financier important pour mettre en œuvre des solutions efficaces</h4>
 
         <ul>
+          <p><br>Les partenaires impliqués dans cette première étude, rejoints par les trois communes
+          concernées, ont décidé de s’engager pour 3 ans pour&nbsp;:</p>
           <li><strong>compléter les données acquises</strong> lors de la première étude concernant
             l’utilisation spatiale et temporelle du domaine par les oiseaux et l’impact des dérangements,</li>
           <li>mettre en place des <strong>solutions de gestion s’appuyant directement sur les
@@ -63,6 +64,7 @@ import { ref, onMounted } from 'vue';
           <li><strong>vulgariser largement les résultats</strong> pour sensibiliser le grand public.
           </li>
         </ul>
+
         <p>Sur les 3 ans, les 4 sociétés de remontées mécaniques ainsi que les communes des 3 Vallées
         et la Fédération des chasseurs de Savoie se sont engagées sur un montant total de 142&nbsp;500 €. Ce financement
         va notamment permettre <strong>l'achat des balises satellitaires</strong> qui seront posées sur les oiseaux et
@@ -95,6 +97,11 @@ import { ref, onMounted } from 'vue';
 </template>
 
 <style scoped>
+
+li{
+  margin-left: 50px;
+}
+
 h1 {
   text-align: center;
 }

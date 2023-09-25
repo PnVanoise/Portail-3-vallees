@@ -12,7 +12,6 @@ import { ref, onMounted } from 'vue';
 let map;
 let loading = ref(false);
 let geojsonLayers = ref({});
-// let data = ref({});
 let individuLayers = ref({});
 let fetchedIndividus = [];
 let fetchedIndividusData = [];
@@ -20,30 +19,29 @@ let individusToFetch = [];
 
 // Récupération des individus selectionnés ou déselectionnés
 const getIndividus = async (individus) => {
-  console.log("Received new individus:", individus);
-  console.log("fetchedIndividus length :", fetchedIndividus);
+  // console.log("Received new individus:", individus);
+  // console.log("fetchedIndividus length :", fetchedIndividus);
 
   // Si la liste des individus reçue est < à la liste des individus chargés sur la carte alors on supprime l'individu manquant 
   if (individus.length < fetchedIndividus.length) {
-    const individusToRemove = fetchedIndividus.filter((individuName) =>
-      !individus.some((individu) => individu.name === individuName)
+    const individusToRemove = fetchedIndividus.filter((individuId) =>
+      !individus.some((individu) => individu.id_animal === individuId)
     );
 
     const individusDataToRemove = fetchedIndividusData.filter((individu) =>
       !individus.some((ind) => ind === individu)
     );
 
-    await Promise.all(individusToRemove.map(async (individuName) => {
-      console.log("Individu to remove :", individuName);
-      await removeIndividus(individuName);
-      const index = fetchedIndividus.indexOf(individuName);
+    await Promise.all(individusToRemove.map(async (individuId) => {
+      await removeIndividus(individuId);
+      const index = fetchedIndividus.indexOf(individuId);
       if (index !== -1) {
         fetchedIndividus.splice(index, 1);
       }
     }));
 
     await Promise.all(individusDataToRemove.map(async (individuData) => {
-      console.log("Individu Data to remove :", individuData);
+      // console.log("Individu Data to remove :", individuData);
       await removeIndividus(individuData);
       const indexBis = fetchedIndividusData.indexOf(individuData);
       if (indexBis !== -1) {
@@ -54,87 +52,66 @@ const getIndividus = async (individus) => {
   }
 
   individusToFetch = individus.filter((individu) =>
-    !fetchedIndividus.includes(individu.name)
+    !fetchedIndividus.includes(individu.id_animal)
+
   );
 
-  fetchedIndividus = fetchedIndividus.concat(individusToFetch.map((individu) => individu.name));
+  fetchedIndividus = fetchedIndividus.concat(individusToFetch.map((individu) => individu.id_animal));
   fetchedIndividusData = fetchedIndividusData.concat(individusToFetch.map((individu) => individu));
 
   if (individusToFetch.length > 0) {
     const lastIndividutoFetch = individusToFetch[individusToFetch.length - 1];
 
-    console.log("Individus to fetch :", lastIndividutoFetch);
+    // console.log("Individus to fetch :", lastIndividutoFetch);
     fetchData([lastIndividutoFetch], timeRef.value);
   }
 
 };
 
 // Fonction qui retire les données de la carte 
-const removeIndividus = async (individuName) => {
+const removeIndividus = async (individuId) => {
 
-  if (individuLayers.value[individuName + '_point']) {
-    console.log("Removing point layer:", individuName + '_point');
-    geojsonLayers.value.removeLayer(individuLayers.value[individuName + '_point']);
-    delete individuLayers.value[individuName + '_point'];
+  if (individuLayers.value[individuId + '_point']) {
+    // console.log("Removing point layer:", individuName + '_point');
+    geojsonLayers.value.removeLayer(individuLayers.value[individuId + '_point']);
+    delete individuLayers.value[individuId + '_point'];
   }
 
-  if (individuLayers.value[individuName + '_lastpoint']) {
-    console.log("Removing point layer:", individuName + '_lastpoint');
-    geojsonLayers.value.removeLayer(individuLayers.value[individuName + '_lastpoint']);
-    delete individuLayers.value[individuName + '_lastpoint'];
+  if (individuLayers.value[individuId + '_lastpoint']) {
+    // console.log("Removing point layer:", individuName + '_lastpoint');
+    geojsonLayers.value.removeLayer(individuLayers.value[individuId + '_lastpoint']);
+    delete individuLayers.value[individuId + '_lastpoint'];
   }
 
-  if (individuLayers.value[individuName + '_ligne']) {
-    console.log("Removing ligne layer:", individuName + '_ligne');
-    geojsonLayers.value.removeLayer(individuLayers.value[individuName + '_ligne']);
-    delete individuLayers.value[individuName + '_ligne'];
+  if (individuLayers.value[individuId + '_ligne']) {
+    // console.log("Removing ligne layer:", individuName + '_ligne');
+    geojsonLayers.value.removeLayer(individuLayers.value[individuId + '_ligne']);
+    delete individuLayers.value[individuId + '_ligne'];
   }
 
-  if (individuLayers.value[individuName + '_fleche']) {
-    console.log("Removing fleche layer:", individuName + '_fleche');
-    geojsonLayers.value.removeLayer(individuLayers.value[individuName + '_fleche']);
-    delete individuLayers.value[individuName + '_fleche'];
+  if (individuLayers.value[individuId+ '_fleche']) {
+    // console.log("Removing fleche layer:", individuName + '_fleche');
+    geojsonLayers.value.removeLayer(individuLayers.value[individuId + '_fleche']);
+    delete individuLayers.value[individuId + '_fleche'];
   }
-
-  // // if (timeSelected.length == 1) {
-  //   const index = fetchedIndividus.indexOf(individuName);
-  //   if (index !== -1) {
-  //     fetchedIndividus.splice(index, 1);
-  //   }
-  //   const indexBis = fetchedIndividusData.indexOf(individuName);
-  //   if (indexBis !== -1) {
-  //     fetchedIndividusData.splice(indexBis, 1);
-  //   }
-  // // }
 };
 
-let timeRef = ref(15);
-let timeSelected = [15];
-console.log("Période par défaut :", timeRef.value);
+let timeRef = ref(window.config.default_last_day);
+let timeSelected = [window.config.default_last_day];
 
 // Récupération de la période sélectionnée 
 const getTime = (timeSelect) => {
   timeRef.value = timeSelect;
-  console.log("Période sélectionnée :", timeRef.value);
-
   timeSelected.push(timeRef.value);
-  console.log("Liste des périodes sélectionnées :", timeSelected);
-  console.log("Liste des individués sélectionnés :", fetchedIndividus);
 
-  // Si la liste des périodes sélectionnées est > à 1 et qu'il y a déjà des données chargées sur la carte alors on les retire et on les re-affiche à jour
+  // Si la liste des périodes sélectionnées est > à 1 
+  // et qu'il y a déjà des données chargées sur la carte alors on les retire et on les re-affiche à jour
   if (timeSelected.length > 1 && fetchedIndividus.length > 0) {
-    // if (fetchedIndividus.length > 0) {
-      console.log("FetchedIndividus :", fetchedIndividusData)
-
       for (let i of fetchedIndividusData) {
-        console.log("Remove individu :", i);
-        removeIndividus(i.name);
-        console.log("Fetch individu :", i);
+        removeIndividus(i.id_animal);
         fetchData([i], timeRef.value);
       }
-      timeSelected = [15];
-      // console.log("Liste des périodes sélectionnées :", timeSelected);
-    // }
+      timeSelected = [window.config.default_last_day];
   }
 };
 
@@ -144,17 +121,17 @@ const fetchData = async (individus, time) => {
 
     if (individus.length > 0) {
 
-      loading.value = true;
+      loading.value = true; // Spinner
 
-      console.log("Fetching data for:", individus);
+      // console.log("Fetching data for:", individus);
       const fetchRequests = individus.map(async (individu) => {
-        console.log("Processing data for:", individu.name);
+      // console.log("Processing data for:", individu.name);
 
         const name = individu.name;
-        const nameBis = individu.name.replace(/\s+/g, "_");
+        const Id = individu.id_animal;
         const color = individu.attributs.fill;
 
-        let apiUrl = window.config.api_url + '/v_animals_loc?name=' + name;
+        let apiUrl = window.config.api_url + '/v_animals_loc?id_animal=' + Id;
 
         if (time !== "All") {
           apiUrl += '&last_day=' + time;
@@ -163,36 +140,40 @@ const fetchData = async (individus, time) => {
         const response = await fetch(apiUrl);
         const data = await response.json();
 
-        return { name, data, nameBis, color };
+        return { Id, name, data, color };
+
       });
 
       const results = await Promise.all(fetchRequests);
 
-      results.forEach(({ name, data, nameBis, color }) => {
+        results.forEach(({ Id, name, data, color }) => {
         if (data.features.length > 0) {
-          // Initialisation du style des points et des popup
+
+          // Initialisation du style des points 
           const stylePoint = { "color": "#000", "fillColor": "#FFF", "Opacity": 1, "fillOpacity": 1, "weight": 3 };
           const lastPointIcon = L.divIcon({
             html: `<svg viewBox='0 0 500 820' version='1.1' xmlns='http://www.w3.org/2000/svg' xml:space='preserve' style='fill-rule: evenodd; clip-rule: evenodd; stroke-linecap: round;'>
             <defs>
-              <linearGradient id='map-marker-${nameBis}-f' x1='0%' y1='0%' x2='100%' y2='0%'>
+              <linearGradient id='map-marker-${Id}-f' x1='0%' y1='0%' x2='100%' y2='0%'>
                 <stop offset='0%' style='stop-color:${color};stop-opacity:1' />
                 <stop offset='100%' style='stop-color:${color};stop-opacity:1' />
               </linearGradient>
               <!-- Define a linear gradient with a unique ID for the stroke -->
-              <linearGradient id='map-marker-${nameBis}-s' x1='0%' y1='0%' x2='100%' y2='0%'>
+              <linearGradient id='map-marker-${Id}-s' x1='0%' y1='0%' x2='100%' y2='0%'>
                 <stop offset='0%' style='stop-color:rgb(0,0,0);stop-opacity:1' />
                 <stop offset='100%' style='stop-color:rgb(0,0,0);stop-opacity:1' />
               </linearGradient>
             </defs>
             <g transform="matrix(19.5417,0,0,19.5417,-7889.1,-9807.44)">
               <path xmlns='http://www.w3.org/2000/svg' fill='#FFFFFF' d='M421.2,515.5c0,2.6-2.1,4.7-4.7,4.7c-2.6,0-4.7-2.1-4.7-4.7c0-2.6,2.1-4.7,4.7-4.7 C419.1,510.8,421.2,512.9,421.2,515.5z'/>
-              <path d="M416.544,503.612C409.971,503.612 404.5,509.303 404.5,515.478C404.5,518.256 406.064,521.786 407.194,524.224L416.5,542.096L425.762,524.224C426.892,521.786 428.5,518.433 428.5,515.478C428.5,509.303 423.117,503.612 416.544,503.612ZM416.544,510.767C419.128,510.784 421.223,512.889 421.223,515.477C421.223,518.065 419.128,520.14 416.544,520.156C413.96,520.139 411.865,518.066 411.865,515.477C411.865,512.889 413.96,510.784 416.544,510.767Z" stroke-width="1.1px" fill="url(#map-marker-${nameBis}-f)" stroke="url(#map-marker-${nameBis}-s)"/></g>
+              <path d="M416.544,503.612C409.971,503.612 404.5,509.303 404.5,515.478C404.5,518.256 406.064,521.786 407.194,524.224L416.5,542.096L425.762,524.224C426.892,521.786 428.5,518.433 428.5,515.478C428.5,509.303 423.117,503.612 416.544,503.612ZM416.544,510.767C419.128,510.784 421.223,512.889 421.223,515.477C421.223,518.065 419.128,520.14 416.544,520.156C413.96,520.139 411.865,518.066 411.865,515.477C411.865,512.889 413.96,510.784 416.544,510.767Z" stroke-width="1.1px" fill="url(#map-marker-${Id}-f)" stroke="url(#map-marker-${Id}-s)"/></g>
           </svg>`,
             className: "",
             iconSize: [30, 30],
             iconAnchor: [16, 42],
           });
+
+          // Fonction Popup
           const popUp = (feature, layer) => {
             if (feature.properties) {
               let popupString = '';
@@ -203,7 +184,7 @@ const fetchData = async (individus, time) => {
                 'gps_date': 'Date de la localisation',
                 'altitude': 'Altitude (en m)'
               };
-              let attributsOrder = ['name', 'nom_vern', 'attributs', 'birth_year', 'gps_date', 'altitude'];
+              let attributsOrder = ['name', 'nom_vern', 'attributs', 'gps_date', 'altitude'];
               for (let i = 0; i < attributsOrder.length; i++) {
                 const key = attributsOrder[i];
                 if (key in feature.properties) {
@@ -214,7 +195,7 @@ const fetchData = async (individus, time) => {
                         if (attrKey === 'sex_libelle') {
                           popupString += '<strong>Sexe</strong> : ' + attributsObj[attrKey] + '<br />';
                         } else if (attrKey === 'age_libelle') {
-                          popupString += '<strong>Maturité</strong> : ' + attributsObj[attrKey] + '<br />';
+                          popupString += '<strong>Maturité (à la capture)</strong> : ' + attributsObj[attrKey] + '<br />';
                         }
                       }
                     }
@@ -226,6 +207,8 @@ const fetchData = async (individus, time) => {
               layer.bindPopup(popupString);
             }
           };
+
+          // Code commenté pour générer des markers cluster mais pas très opti pour le moment
 
           // const geojsonMarkerOptions = {
           //   radius: 5,
@@ -242,41 +225,7 @@ const fetchData = async (individus, time) => {
           //   pointToLayer: function (feature, latlng) {
           //     return markers.addLayer(L.circleMarker(latlng, geojsonMarkerOptions));
           //   },
-          //   onEachFeature: function (feature, layer) {
-          //     if (feature.properties) {
-          //       let popupString = '';
-          //       let attributs = {
-          //         'name': 'Surnom',
-          //         'nom_vern': 'Espèce',
-          //         'attributs': 'Attributs',
-          //         'birth_year': 'Année de naissance',
-          //         'gps_date': 'Date de la localisation',
-          //         'altitude': 'Altitude (en m)'
-          //       };
-          //       let attributsOrder = ['name', 'nom_vern', 'attributs', 'birth_year', 'gps_date', 'altitude'];
-          //       for (let i = 0; i < attributsOrder.length; i++) {
-          //         const key = attributsOrder[i];
-          //         if (key in feature.properties) {
-          //           if (key === 'attributs') {
-          //             const attributsObj = feature.properties[key];
-          //             for (const attrKey in attributsObj) {
-          //               if (attributsObj.hasOwnProperty(attrKey)) {
-          //                 if (attrKey === 'sex_libelle') {
-          //                   popupString += '<strong>Sexe</strong> : ' + attributsObj[attrKey] + '<br />';
-          //                 } else if (attrKey === 'age_libelle') {
-          //                   popupString += '<strong>Age</strong> : ' + attributsObj[attrKey] + '<br />';
-          //                 }
-          //               }
-          //             }
-          //           } else {
-          //             popupString += '<strong>' + attributs[key] + '</strong> : ' + feature.properties[key] + '<br />';
-          //           }
-          //         }
-          //       }
-          //       layer.bindPopup(popupString);
-          //     }
-          //   }
-
+          //   onEachFeature: popUp
           // });
           // individuLayers.value[name + '_point'] = markers;
           // geojsonLayers.value.addLayer(markers);
@@ -292,22 +241,10 @@ const fetchData = async (individus, time) => {
             },
             onEachFeature: popUp
           }).addTo(map);
-          individuLayers.value[name + '_lastpoint'] = geojsonLastPoint;
+          individuLayers.value[Id + '_lastpoint'] = geojsonLastPoint;
           geojsonLayers.value.addLayer(geojsonLastPoint);
 
-
-          //On traduit les données en points avec popup
-          const geojsonLayerPoint = L.geoJSON(data, {
-            style: stylePoint,
-            pointToLayer: function (feature, latlng) {
-              return L.circleMarker(latlng, { radius: 5 });
-            },
-            onEachFeature: popUp
-          }).addTo(map);
-          individuLayers.value[name + '_point'] = geojsonLayerPoint;
-          geojsonLayers.value.addLayer(geojsonLayerPoint);
-
-
+          // Récupération des coordonnées
           let lineCoordinate = [];
 
           for (let i in data.features) {
@@ -315,7 +252,7 @@ const fetchData = async (individus, time) => {
             let coord = pointJson.geometry.coordinates;
             lineCoordinate.push([coord[1], coord[0]]);
           }
-
+          // Création des polylignes et des décorations (flèches)
           if (lineCoordinate.length > 1) {
             const geojsonLayerLine = L.polyline(lineCoordinate, {
               color: color,
@@ -335,12 +272,25 @@ const fetchData = async (individus, time) => {
                 })
               }]
             }).addTo(map);
-            individuLayers.value[name + '_fleche'] = fleche;
+            individuLayers.value[Id + '_fleche'] = fleche;
             geojsonLayers.value.addLayer(fleche);
-            individuLayers.value[name + '_ligne'] = geojsonLayerLine;
+            individuLayers.value[Id + '_ligne'] = geojsonLayerLine;
             geojsonLayers.value.addLayer(geojsonLayerLine);
 
-          }
+          };
+
+          // On traduit les données en points avec popup
+          const geojsonLayerPoint = L.geoJSON(data, {
+            style: stylePoint,
+            pointToLayer: function (feature, latlng) {
+              return L.circleMarker(latlng, { radius: 5 });
+            },
+            onEachFeature: popUp
+          }).addTo(map);
+          individuLayers.value[Id + '_point'] = geojsonLayerPoint;
+          geojsonLayers.value.addLayer(geojsonLayerPoint);
+
+
           if (geojsonLayerPoint !== null) {
             map.fitBounds(geojsonLayerPoint.getBounds());
           }
@@ -353,7 +303,7 @@ const fetchData = async (individus, time) => {
       loading.value = false;
     }
   } catch (error) {
-    console.log("Error fetching data:", error);
+    console.log("Erreur de récupération des données : ", error);
   }
 };
 
@@ -389,10 +339,12 @@ onMounted(() => {
       layers: [osm]
     });
 
+    // Gestionnaire de couches, outil zoom et échelle
     L.control.layers(baseMaps).addTo(map);
     L.control.zoom({ position: 'topright' }).addTo(map);
     L.control.scale({ imperial: false, position: 'bottomright' }).addTo(map);
 
+    // Légende
     const legend = L.control({ position: 'bottomright' });
     legend.onAdd = function (map) {
       let div = L.DomUtil.create('div', 'legend');
@@ -409,7 +361,7 @@ onMounted(() => {
 
 
   } catch (error) {
-    console.log("error during initial data fetch:", error);
+    console.log("Erreur lors de l'initialisation de la carte : ", error);
   }
 });
 
@@ -417,8 +369,8 @@ onMounted(() => {
 
 <template>
 
-  <div class="d-flex flex-col">
-    <div id="map" class="map-container"></div>
+  <div id="map-container" class="d-flex flex-col" style="padding: 0;">
+    <div id="map"></div>
     <div class="d-flex flex-row">
       <Sidebar @send-individu="getIndividus" @sendTime="getTime" />
     </div>
@@ -434,15 +386,16 @@ onMounted(() => {
 </template>
 
 <style>
+
+
 #map {
   width: -webkit-fill-available;
   height: -webkit-fill-available;
-  /* width: 100%;
-  height: 88vh; */
-  /* margin: 0; */
   position: fixed;
   z-index: 1;
 }
+
+ /*  Légende carto */
 
 .legend {
   width: min-content;
@@ -459,6 +412,10 @@ onMounted(() => {
   font-size: 16px;
   margin: 2px 12px 8px;
   color: #000;
+}
+
+.legend .row {
+  width: 180px;
 }
 
 .legend .item {
@@ -480,39 +437,30 @@ onMounted(() => {
   font-size: 13px;
   color: #000;
   margin: 0;
-  /* float: left; */
 }
 
 .legend .marker {
   width: 20px;
-  /* margin-right: 8px;
-  margin-left: 8px; */
-  /* margin-top: 8px; */
-  /* float: left; */
 }
 
 .legend .track {
   width: 40px;
   height: 15px;
-  /* float: left; */
-  /* margin-top: 8px; */
-  /* margin-bottom: 8px; */
 }
 
 .legend i.point {
   background-color: #fff;
   border: 3px solid #000;
   border-radius: 50%;
-  /* fill-opacity: 1;
-  fill-rule: evenodd; */
   width: 18px;
   height: 18px;
-  /* float:left; */
   margin-right: 8px;
   margin-left: 8px;
   display: inline-flex;
 
 }
+
+/* Spinner chargement des données */
 
 .spinner-container {
   position: fixed;
