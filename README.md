@@ -59,7 +59,7 @@ Le projet ayant été élaboré sur une branche, il est possible qu'elle ne soit
 sudo wget https://github.com/PnVanoise/FollowDem-admin/archive/refs/heads/FDadmin-tests-stage.zip
 unzip FDadmin-tests-stage.zip 
 ```
-Suivez la doc d’installation (ignorez la partie "Import des données") : https://github.com/PnEcrins/FollowDem-admin/blob/master/docs/installation.rst
+Suivez la doc d’installation (ignorez la partie "Import des données") : https://github.com/PnVanoise/FollowDem-admin/blob/FDadmin-tests-stage/docs/installation.rst 
 
 Déploiement Gunicorn :
 - Copiez et éditez le fichier de settings (restez en localhost pour pouvoir passer en HTTPS plus tard): `cp ./settings.ini.sample ./settings.ini`
@@ -82,9 +82,12 @@ Clonez le dépôt (dans /home/user):
 sudo wget https://github.com/PnVanoise/Portail-3-vallees/archive/refs/heads/main.zip
 unzip main.zip 
 ```
-Mettez à jour les packages (pour les librairies Leaflet, Bootstrap notamment) :
+Installez les packages (pour les librairies Leaflet, Bootstrap notamment) :
 ```
 cd Portail-3-vallees/app 
+npm install
+npm install leaflet
+npm install bootstrap@5.3.0
 npm update --save
 ```
 Personnalisation de l'application :
@@ -100,7 +103,7 @@ Déploiement Apache :
 
 Votre site a été mis en ligne. Exemple d'appel API : http://mondomaine.fr/admin/api/v_animals 
 
-Ou : http://127.0.0.1:5000/api/v_animals 
+Ou : http://127.0.0.1:5000/api/v_animals (l'adresse est inaccessible c'est normal)
 
 ### Sécurisation du site
 
