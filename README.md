@@ -36,25 +36,28 @@ Prérequis :
 sudo apt-get update
 sudo apt-get upgrade
 sudo apt-get install postgresql-15
-sudo apt-get install postgis postgres-15-postgis-3
+sudo apt-get install postgis postgresql-15-postgis-3
 sudo apt-get install python3
 sudo apt-get install python3-venv
+sudo apt-get instamm python3-pip
 sudo apt-get install apache2
 sudo apt-get install nodejs
 sudo apt-get install npm
 sudo apt-get install git
 
-sudo pip install gunicorn
+sudo pip3 install gunicorn
 ```
 ### Installation de FollowDem-Admin 
 
-Clonez le dépôt :
+Clonez le dépôt (dans /home/user):
 ```
-git clone git@github.com:PnVanoise/FollowDem-admin.git
+sudo wget https://github.com/PnVanoise/FollowDem-admin/archive/refs/heads/main.zip
+unzip main.zip
 ```
-Le projet ayant été élaboré sur une branche, il est possible qu'elle ne soit pas encore appliquée au main, si c'est le cas :
+Le projet ayant été élaboré sur une branche, il est possible qu'elle ne soit pas encore appliquée au main, si c'est le cas (dans /home/user) :
 ```
-git clone -b FDadmin-tests-stage git@github.com:PnVanoise/FollowDem-admin.git
+sudo wget https://github.com/PnVanoise/FollowDem-admin/archive/refs/heads/FDadmin-tests-stage.zip
+unzip FDadmin-tests-stage.zip 
 ```
 Suivez la doc d’installation (ignorez la partie "Import des données") : https://github.com/PnEcrins/FollowDem-admin/blob/master/docs/installation.rst
 
@@ -75,9 +78,11 @@ Le serveur est ouvert sur l’IP et le port que vous avez configuré, exemple : 
 
 ### Installation de GPS 3 Vallées
 
-Clonez le dépôt :
+Clonez le dépôt (dans /home/user):
 ```
-git clone git@github.com:PnVanoise/Portail-3-vallees.git
+sudo wget https://github.com/PnVanoise/Portail-3-vallees/archive/refs/heads/main.zip
+
+unzip main.zip 
 ```
 Mettez à jour les packages (pour les librairies Leaflet, Bootstrap notamment) :
 ```
