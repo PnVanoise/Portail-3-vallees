@@ -209,8 +209,8 @@ for lsource, source_data in config_data.get("data_sources", {}).items():
                 logger.info("Error moving the file to 'unprocessed' directory:", e)
 
 # REFRESH MATERIALIZED VIEWS
-query = "REFRESH MATERIALIZED VIEW followdem.vm_animals_loc WITH DATA;"
-cursor.execute(query)
-print("Materialized view refreshed!")
-logger.info("Materialized view refreshed!")
+# query = "REFRESH MATERIALIZED VIEW followdem.vm_animals_loc WITH DATA;"
+#cursor.execute(query)
+#print("Materialized view refreshed!")
+#logger.info("Materialized view refreshed!")
 logger.info("Completed import data")

@@ -62,7 +62,7 @@ unzip FDadmin-tests-stage.zip
 Suivez la doc d’installation (ignorez la partie "Import des données") : https://github.com/PnEcrins/FollowDem-admin/blob/master/docs/installation.rst
 
 Déploiement Gunicorn :
-- Copiez et éditez le fichier de settings : `cp ./settings.ini.sample ./settings.ini`
+- Copiez et éditez le fichier de settings (restez en localhost pour pouvoir passer en HTTPS plus tard): `cp ./settings.ini.sample ./settings.ini`
 - Copiez le fichiez de service : `cp ./GPS3V-admin.service.template /etc/systemd/system/GPS3V-admin.service`
 - Rendre exécutable le fichier sh : `chmod +x /home/user/GPS3vallees-admin/gunicorn_start.sh`
 - Démarrez le service : 
@@ -73,15 +73,13 @@ sudo systemctl enable GPS3V-admin
 - Pour vérifier l’état du service : `sudo systemctl status GPS3V-admin`
 - Pour arrêter le service si besoin : `sudo systemctl stop GPS3V-admin`
 - Pour relancer le service si besoin : `sudo systemctl restart GPS3V-admin`
-
-Le serveur est ouvert sur l’IP et le port que vous avez configuré, exemple : http://localhost:5000/ 
+- Pour stopper le service si besoin : `sudo systemctl disable GPS3V-admin`
 
 ### Installation de GPS 3 Vallées
 
 Clonez le dépôt (dans /home/user):
 ```
 sudo wget https://github.com/PnVanoise/Portail-3-vallees/archive/refs/heads/main.zip
-
 unzip main.zip 
 ```
 Mettez à jour les packages (pour les librairies Leaflet, Bootstrap notamment) :
@@ -96,9 +94,30 @@ Personnalisation de l'application :
 
 Déploiement Apache :
 - Copiez la configuration située dans /app : `cp ./conf_apache.template  /etc/apache2/sites-available/GPS3vallees.conf`  
-- Editez : `sudo nano /etc/apache2/sites-available/GPS3vallees.conf`
+- Editez (le contenu de Location correspond au back-end déployé précédement): `sudo nano /etc/apache2/sites-available/GPS3vallees.conf`
 - Activez le service : `sudo a2ensite GPS3vallees.conf`
 - Redémarrez Apache2 : `sudo systemctl restart apache2`
+
+Votre site a été mis en ligne. Exemple d'appel API : http://mondomaine.fr/admin/api/v_animals 
+
+Ou : http://127.0.0.1:5000/api/v_animals 
+
+### Sécurisation du site
+
+Basé sur https://docs.geonature.fr/https.html :
+- Installez certbot : `sudo apt-get install python3-certbot-apache`
+- Lancez et générez le certificat pour votre domaine : `sudo certbot --apache --email monemail@mondomaine.fr`
+- Activez les modules :
+```
+sudo a2enmod ssl
+sudo a2enmod rewrite
+sudo a2enmod headers
+sudo apachectl restart
+```
+
+N'oubliez pas de modifier le fichier conf.json du front et de passer l'api_url en https.
+
+Votre site est maintenant en HTTPS. 
 
 ## Copyright
 Auteur·ices :

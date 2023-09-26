@@ -6,9 +6,9 @@
        AllowOverride All
        Require all granted
    </Directory>
-   <Location /home/user/GPS3vallees-admin/api>
-        ProxyPass http://0.0.0.0:5000
-        ProxyPassReverse http://0.0.0.0:5000
+   <Location /GPS3V-admin>
+        ProxyPass http://127.0.0.1:5000
+        ProxyPassReverse http://127.0.0.1:5000
    </Location>
    ErrorLog ${APACHE_LOG_DIR}/error.log
    CustomLog ${APACHE_LOG_DIR}/access.log combined

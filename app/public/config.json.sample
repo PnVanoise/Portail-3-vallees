@@ -12,7 +12,7 @@
 		"onglet_c": "PARTENAIRES"
 	},
 
-  "api_url": "http://IP:5000/api",
+  "api_url": "http://mondomaine.fr/api",
 
 	"title_sidebar":"Un portail pour le suivi de l'Avifaune",
 
