@@ -41,12 +41,14 @@ sudo apt-get install python3
 sudo apt-get install python3-venv
 sudo apt-get instamm python3-pip
 sudo apt-get install apache2
-sudo apt-get install nodejs
-sudo apt-get install npm
 sudo apt-get install git
 
 sudo pip3 install gunicorn
 ```
+Installation de nvm : `wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.5/install.sh | bash`
+
+Relancez votre serveur puis installez npm et Nodejs : `nvm install --lts`
+
 ### Installation de FollowDem-Admin 
 
 Clonez le dépôt (dans /home/user):
@@ -63,7 +65,7 @@ Suivez la doc d’installation (ignorez la partie "Import des données") : https
 
 Déploiement Gunicorn :
 - Copiez et éditez le fichier de settings (restez en localhost pour pouvoir passer en HTTPS plus tard): `cp ./settings.ini.sample ./settings.ini`
-- Copiez le fichiez de service : `cp ./GPS3V-admin.service.template /etc/systemd/system/GPS3V-admin.service`
+- Copiez le fichiez de service : `sudo cp ./GPS3V-admin.service.template /etc/systemd/system/GPS3V-admin.service`
 - Rendre exécutable le fichier sh : `chmod +x /home/user/GPS3vallees-admin/gunicorn_start.sh`
 - Démarrez le service : 
 ```
@@ -93,10 +95,11 @@ npm update --save
 Personnalisation de l'application :
 - Copiez et éditez le fichier de config situé dans /public : `cp ./config.json.sample ./config.json`
 - Développement de l’application : `npm run dev`
+- Sur une IP spécifique : `npm run dev -- --host IP` 
 - Compil de l’application pour la production (création d’un répertoire dist) : `npm run build` 
 
 Déploiement Apache :
-- Copiez la configuration située dans /app : `cp ./conf_apache.template  /etc/apache2/sites-available/GPS3vallees.conf`  
+- Copiez la configuration située dans /app : `sudo cp ./conf_apache.template  /etc/apache2/sites-available/GPS3vallees.conf`  
 - Editez (le contenu de Location correspond au back-end déployé précédement): `sudo nano /etc/apache2/sites-available/GPS3vallees.conf`
 - Activez le service : `sudo a2ensite GPS3vallees.conf`
 - Redémarrez Apache2 : `sudo systemctl restart apache2`
