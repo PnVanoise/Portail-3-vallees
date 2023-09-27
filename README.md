@@ -42,6 +42,7 @@ sudo apt-get install python3-venv
 sudo apt-get instamm python3-pip
 sudo apt-get install apache2
 sudo apt-get install git
+sudo apt-get install libpq-dev
 
 sudo pip3 install gunicorn
 ```
@@ -63,19 +64,15 @@ unzip FDadmin-tests-stage.zip
 ```
 Suivez la doc d’installation (ignorez la partie "Import des données") : https://github.com/PnVanoise/FollowDem-admin/blob/FDadmin-tests-stage/docs/installation.rst 
 
-Pour tester le serveur : 
-```
-source venv/bin/activate
-FLASK_APP=./app FLASK_DEBUG=1 flask run -h IP -p PORT
-```
-
 Déploiement Gunicorn :
 - Copiez et éditez le fichier de settings (restez en localhost pour pouvoir passer en HTTPS plus tard): `cp ./settings.ini.sample ./settings.ini`
-- Copiez le fichiez de service : `sudo cp ./GPS3V-admin.service.template /etc/systemd/system/GPS3V-admin.service`
+- Copiez le fichier de service : `sudo cp ./GPS3V-admin.service.template /etc/systemd/system/GPS3V-admin.service`
+- Editez le fichier de service (remplacez le chemin vers le fichier gunicorn_start.sh): `sudo nano /etc/systemd/system/GPS3V-admin.service`
 - Rendre exécutable le fichier sh : `chmod +x /home/user/GPS3vallees-admin/gunicorn_start.sh`
 - Démarrez le service : 
 ```
 sudo systemctl start GPS3V-admin
+sudo systemctl daemon-reload
 sudo systemctl enable GPS3V-admin
 ```
 - Pour vérifier l’état du service : `sudo systemctl status GPS3V-admin`
