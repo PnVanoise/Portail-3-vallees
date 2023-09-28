@@ -68,7 +68,7 @@ Ouverture de la base de données depuis l'extérieur :
 - Ajoutez une entrée dans le fichier pg_hba.conf : `sudo nano /etc/postgresql/15/main/pg_hba.conf`
 - Dans le bloc IPv4 local connections ajoutez la ligne : `host  all  all  0.0.0.0/0  md5`
 - Ajoutez les adresses dans postgresql.conf : `sudo nano /etc/postgresql/15/main/postgresql.conf`
-- Dans la section CONNECTIONS AND AUTHENTICATION, décommentez la propriété listen_adresses et remplacez localhost par *
+- Dans la section CONNECTIONS AND AUTHENTICATION, décommentez la propriété listen_adresses et remplacez localhost par '*'
 - Redémarrez le service postgresql : `sudo service postgresql restart`
 
 Création d'un cron pour alimenter la base de données automatiquement : `crontab -e` puis choisir 1
