@@ -64,10 +64,25 @@ unzip FDadmin-tests-stage.zip
 ```
 Suivez la doc d’installation (ignorez la partie "Import des données") : https://github.com/PnVanoise/FollowDem-admin/blob/FDadmin-tests-stage/docs/installation.rst 
 
+Ouverture de la base de données depuis l'extérieur : 
+- Ajoutez une entrée dans le fichier pg_hba.conf : `sudo nano /etc/postgresql/15/main/pg_hba.conf`
+- Dans le bloc IPv4 local connections ajoutez la ligne : `host  all  all  0.0.0.0/0  md5`
+- Ajoutez les adresses dans postgresql.conf : `sudo nano /etc/postgresql/15/main/postgresql.conf`
+- Dans la section CONNECTIONS AND AUTHENTICATION, décommentez la propriété listen_adresses et remplacez localhost par *
+- Redémarrez le service postgresql : `sudo service postgresql restart`
+
+Création d'un cron pour alimenter la base de données automatiquement : `crontab -e` puis choisir 1
+```
+# Toutes les 6h à :00 import des données Ornitela
+0 */6 * * * python3 /home/user/Portail-3-vallees/app/public/import_data.py 
+# Toutes les 6h à :15 refresh la vue
+15 */6 * * * PGPASSWORD="password" psql -h "localhost" -p "5432" -U "user" "followdem" -c "REFRESH MATERIALIZED VIEW followdem.vm_animals_loc WITH DATA;"
+```
+
 Déploiement Gunicorn :
 - Copiez et éditez le fichier de settings (restez en localhost pour pouvoir passer en HTTPS plus tard): `cp ./settings.ini.sample ./settings.ini`
 - Copiez le fichier de service : `sudo cp ./GPS3V-admin.service.template /etc/systemd/system/GPS3V-admin.service`
-- Editez le fichier de service (remplacez le chemin vers le fichier gunicorn_start.sh): `sudo nano /etc/systemd/system/GPS3V-admin.service`
+- Editez le fichier de service (remplacez le user et le chemin vers le fichier gunicorn_start.sh): `sudo nano /etc/systemd/system/GPS3V-admin.service`
 - Rendre exécutable le fichier sh : `chmod +x /home/user/GPS3vallees-admin/gunicorn_start.sh`
 - Démarrez le service : 
 ```
@@ -104,6 +119,12 @@ Personnalisation de l'application :
 Déploiement Apache :
 - Copiez la configuration située dans /app : `sudo cp ./conf_apache.template  /etc/apache2/sites-available/GPS3vallees.conf`  
 - Editez (le contenu de Location correspond au back-end déployé précédement): `sudo nano /etc/apache2/sites-available/GPS3vallees.conf`
+- Ajoutez les modules proxy :
+```
+sudo a2enmod proxy
+sudo a2enmod proxy_http
+sudo systemctl restart apache2
+```
 - Activez le service : `sudo a2ensite GPS3vallees.conf`
 - Redémarrez Apache2 : `sudo systemctl restart apache2`
 
